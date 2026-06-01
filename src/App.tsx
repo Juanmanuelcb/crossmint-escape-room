@@ -1,122 +1,97 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import * as React from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import {
+  KeyboardControls,
+  PointerLockControls,
+  useKeyboardControls,
+} from '@react-three/drei'
+import * as THREE from 'three'
 
-function App() {
-  const [count, setCount] = useState(0)
+type Control = 'forward' | 'back' | 'left' | 'right'
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const keyMap: { name: Control; keys: string[] }[] = [
+  { name: 'forward', keys: ['KeyW', 'ArrowUp'] },
+  { name: 'back', keys: ['KeyS', 'ArrowDown'] },
+  { name: 'left', keys: ['KeyA', 'ArrowLeft'] },
+  { name: 'right', keys: ['KeyD', 'ArrowRight'] },
+]
 
-      <div className="ticks"></div>
+const ROOM = 10
+const WALL_H = 3
+const SPEED = 4
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+const Room: React.FC = () => (
+  <group>
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[ROOM, ROOM]} />
+      <meshStandardMaterial color='#5a5a66' />
+    </mesh>
+    <mesh position={[0, WALL_H / 2, -ROOM / 2]}>
+      <planeGeometry args={[ROOM, WALL_H]} />
+      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+    </mesh>
+    <mesh position={[0, WALL_H / 2, ROOM / 2]}>
+      <planeGeometry args={[ROOM, WALL_H]} />
+      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+    </mesh>
+    <mesh
+      position={[-ROOM / 2, WALL_H / 2, 0]}
+      rotation={[0, Math.PI / 2, 0]}
+    >
+      <planeGeometry args={[ROOM, WALL_H]} />
+      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+    </mesh>
+    <mesh
+      position={[ROOM / 2, WALL_H / 2, 0]}
+      rotation={[0, Math.PI / 2, 0]}
+    >
+      <planeGeometry args={[ROOM, WALL_H]} />
+      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+    </mesh>
+  </group>
+)
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+const Player: React.FC = () => {
+  const camera = useThree((s) => s.camera)
+  const [, getKeys] = useKeyboardControls<Control>()
+  const forward = React.useRef(new THREE.Vector3())
+  const right = React.useRef(new THREE.Vector3())
+  const move = React.useRef(new THREE.Vector3())
+
+  useFrame((_, dt) => {
+    const k = getKeys()
+    forward.current.set(0, 0, -1).applyQuaternion(camera.quaternion)
+    forward.current.y = 0
+    forward.current.normalize()
+    right.current.set(1, 0, 0).applyQuaternion(camera.quaternion)
+    right.current.y = 0
+    right.current.normalize()
+
+    move.current.set(0, 0, 0)
+    if (k.forward) move.current.add(forward.current)
+    if (k.back) move.current.sub(forward.current)
+    if (k.right) move.current.add(right.current)
+    if (k.left) move.current.sub(right.current)
+    if (move.current.lengthSq() > 0) {
+      move.current.normalize().multiplyScalar(SPEED * dt)
+      camera.position.add(move.current)
+    }
+  })
+
+  return null
 }
 
-export default App
+export const App: React.FC = () => (
+  <KeyboardControls map={keyMap}>
+    <Canvas
+      camera={{ position: [0, 1.6, 3], fov: 75, near: 0.1, far: 100 }}
+      style={{ width: '100vw', height: '100svh' }}
+    >
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 8, 5]} intensity={1.2} />
+      <Room />
+      <Player />
+      <PointerLockControls />
+    </Canvas>
+  </KeyboardControls>
+)
