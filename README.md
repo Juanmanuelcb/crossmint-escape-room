@@ -2,7 +2,7 @@
 
 A Crossmint engineering challenge submission. A small browser-based 3D escape room: you're alone on a research station whose reactor just died, you have 15 minutes of air, and the only way out is to power up and launch the escape pod parked in the next room.
 
-**Live:** *to be added after deploy*
+**Live:** https://juanmanuelcb.github.io/crossmint-escape-room/
 
 ---
 
