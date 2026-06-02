@@ -235,7 +235,6 @@ export const P1_Diagnose: React.FC = () => {
         </mesh>
         <Html
           transform
-          occlude
           position={[0, 0, 0.02]}
           distanceFactor={1.2}
           style={{
