@@ -15,15 +15,6 @@ const DIGITS: Digit[] = [
   '0',
 ]
 
-const slotFor = (i: number) => {
-  if (i < 9) {
-    const col = i % 3
-    const row = Math.floor(i / 3)
-    return { col: col - 1, row: 1 - row }
-  }
-  return { col: 0, row: -2 }
-}
-
 const Key: React.FC<{
   digit: Digit
   col: number
@@ -69,11 +60,21 @@ export const P4_Launch: React.FC = () => {
   if (gated) return null
 
   return (
-    <group position={[3, 1.5, 1]}>
+    <group position={[13, 1.5, -3]}>
       <mesh position={[0, 0, -0.06]}>
         <boxGeometry args={[1.5, 2, 0.05]} />
         <meshStandardMaterial color='#222230' />
       </mesh>
+
+      <Text
+        position={[0, 1.35, 0]}
+        fontSize={0.14}
+        color='#ffaa55'
+        anchorX='center'
+        anchorY='middle'
+      >
+        ESCAPE POD #9 // HELIOS-IX
+      </Text>
 
       <Text
         position={[0, 0.85, 0]}
@@ -82,11 +83,12 @@ export const P4_Launch: React.FC = () => {
         anchorX='center'
         anchorY='middle'
       >
-        {`[${entered[0] ?? '_'}] [${entered[1] ?? '_'}] [${entered[2] ?? '_'}] [${entered[3] ?? '_'}]`}
+        {[0, 1, 2, 3].map((i) => `[${entered[i] ?? '_'}]`).join(' ')}
       </Text>
 
       {DIGITS.map((d, i) => {
-        const { col, row } = slotFor(i)
+        const col = i < 9 ? (i % 3) - 1 : 0
+        const row = i < 9 ? 1 - Math.floor(i / 3) : -2
         return (
           <Key
             key={d}

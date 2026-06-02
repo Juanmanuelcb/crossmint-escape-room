@@ -22,7 +22,9 @@ export const Hud: React.FC = () => {
   }, [startedAt])
 
   const remaining =
-    startedAt === null ? durationMs : Math.max(0, durationMs - (now - startedAt))
+    startedAt === null
+      ? durationMs
+      : Math.max(0, durationMs - (now - startedAt))
 
   const slots: (string | null)[] = [
     symbols.one,

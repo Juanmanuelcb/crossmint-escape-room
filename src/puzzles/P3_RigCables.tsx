@@ -11,7 +11,7 @@ export const P3_RigCables: React.FC = () => {
 
   return (
     <mesh
-      position={[-3, 1, 1]}
+      position={[7, 1, -3]}
       onClick={(e) => {
         e.stopPropagation()
         solveP3()

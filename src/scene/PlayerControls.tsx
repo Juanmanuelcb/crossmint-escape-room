@@ -1,16 +1,12 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import {
-  KeyboardControls,
-  PointerLockControls,
-  useKeyboardControls,
-} from '@react-three/drei'
+import { PointerLockControls, useKeyboardControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useGameStore } from '@/state/gameStore'
 
 type Control = 'forward' | 'back' | 'left' | 'right'
 
-const keyMap: { name: Control; keys: string[] }[] = [
+export const keyMap: { name: Control; keys: string[] }[] = [
   { name: 'forward', keys: ['KeyW', 'ArrowUp'] },
   { name: 'back', keys: ['KeyS', 'ArrowDown'] },
   { name: 'left', keys: ['KeyA', 'ArrowLeft'] },
@@ -18,13 +14,31 @@ const keyMap: { name: Control; keys: string[] }[] = [
 ]
 
 const SPEED = 4
+const R = 0.3
+
+const isPassable = (x: number, z: number, doorOpen: boolean) => {
+  const inCR = x > -5 + R && x < 5 - R && z > -5 + R && z < 5 - R
+  const inPB = x > 5 + R && x < 15 - R && z > -5 + R && z < 5 - R
+  const inDoor =
+    doorOpen && x >= 5 - R && x <= 5 + R && z > -1 + R && z < 1 - R
+  return inCR || inPB || inDoor
+}
 
 const Player: React.FC = () => {
   const camera = useThree((s) => s.camera)
   const [, getKeys] = useKeyboardControls<Control>()
+  const doorOpen = useGameStore((s) => s.p2Solved)
+  const status = useGameStore((s) => s.status)
   const forward = React.useRef(new THREE.Vector3())
   const right = React.useRef(new THREE.Vector3())
   const move = React.useRef(new THREE.Vector3())
+
+  React.useEffect(() => {
+    if (status !== 'idle') return
+    camera.position.set(0, 1.6, 3)
+    camera.quaternion.identity()
+    camera.lookAt(0, 1.6, 2)
+  }, [status, camera])
 
   useFrame((_, dt) => {
     const k = getKeys()
@@ -40,9 +54,15 @@ const Player: React.FC = () => {
     if (k.back) move.current.sub(forward.current)
     if (k.right) move.current.add(right.current)
     if (k.left) move.current.sub(right.current)
-    if (move.current.lengthSq() > 0) {
-      move.current.normalize().multiplyScalar(SPEED * dt)
-      camera.position.add(move.current)
+    if (move.current.lengthSq() === 0) return
+
+    move.current.normalize().multiplyScalar(SPEED * dt)
+    const cz = camera.position.z
+    if (isPassable(camera.position.x + move.current.x, cz, doorOpen)) {
+      camera.position.x += move.current.x
+    }
+    if (isPassable(camera.position.x, cz + move.current.z, doorOpen)) {
+      camera.position.z += move.current.z
     }
   })
 
@@ -51,14 +71,17 @@ const Player: React.FC = () => {
 
 export const PlayerControls: React.FC = () => {
   const start = useGameStore((s) => s.start)
+  const status = useGameStore((s) => s.status)
+  const lockable = status !== 'won' && status !== 'lost'
+
+  React.useEffect(() => {
+    if (!lockable) document.exitPointerLock?.()
+  }, [lockable])
+
   return (
     <>
       <Player />
-      <PointerLockControls onLock={start} />
+      {lockable && <PointerLockControls onLock={start} />}
     </>
   )
 }
-
-export const PlayerKeyboard: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => <KeyboardControls map={keyMap}>{children}</KeyboardControls>
