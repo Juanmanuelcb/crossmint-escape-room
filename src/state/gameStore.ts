@@ -32,6 +32,9 @@ export interface GameState {
   solveP2: () => void
   solveP3: () => void
   enterDigit: (d: Digit) => void
+  /** Shaves ms off the oxygen budget by sliding startedAt backward.
+   * No-op when not playing. Underflow handled by the existing lose-poll. */
+  penalize: (ms: number) => void
   win: () => void
   lose: () => void
   reset: () => void
@@ -91,8 +94,16 @@ export const useGameStore = create<GameState>()((set, get) => ({
       set({ enteredCode: next })
       get().win()
     } else {
+      get().penalize(5000)
       set({ enteredCode: [] })
     }
+  },
+
+  penalize: (ms) => {
+    if (get().status !== 'playing') return
+    const s = get().startedAt
+    if (s === null) return
+    set({ startedAt: s - ms })
   },
 
   win: () => set({ status: 'won' }),

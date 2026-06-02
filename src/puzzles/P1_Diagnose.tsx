@@ -118,6 +118,7 @@ const DiagnosticRow: React.FC<RowProps> = ({
 export const P1_Diagnose: React.FC = () => {
   const solved = useGameStore((s) => s.p1Solved)
   const solveP1 = useGameStore((s) => s.solveP1)
+  const penalize = useGameStore((s) => s.penalize)
 
   const [flashIndex, setFlashIndex] = React.useState<number | null>(null)
   const flashTimer = React.useRef<number | null>(null)
@@ -145,6 +146,7 @@ export const P1_Diagnose: React.FC = () => {
       solveP1()
     } else {
       triggerFlash(spec.index)
+      penalize(5000)
     }
   }
 

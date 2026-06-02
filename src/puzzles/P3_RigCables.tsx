@@ -135,6 +135,7 @@ export const P3_RigCables: React.FC = () => {
   const gated = useGameStore((s) => !s.p2Solved)
   const solved = useGameStore((s) => s.p3Solved)
   const solveP3 = useGameStore((s) => s.solveP3)
+  const penalize = useGameStore((s) => s.penalize)
 
   const [installed, setInstalled] = React.useState<
     readonly (CableColor | null)[]
@@ -176,6 +177,7 @@ export const P3_RigCables: React.FC = () => {
     } else {
       triggerSpark()
       setSelected(null)
+      penalize(5000)
     }
   }
 

@@ -63,18 +63,19 @@ const Player: React.FC = () => {
 }
 
 export const PlayerControls: React.FC = () => {
-  const start = useGameStore((s) => s.start)
   const status = useGameStore((s) => s.status)
-  const lockable = status !== 'won' && status !== 'lost'
+  const lockable = status === 'playing'
 
   React.useEffect(() => {
     if (!lockable) document.exitPointerLock?.()
   }, [lockable])
 
+  // Timer is started by the StartScreen button, not by pointer lock,
+  // so the player can read the instructions without the clock running.
   return (
     <>
       <Player />
-      {lockable && <PointerLockControls onLock={start} />}
+      {lockable && <PointerLockControls />}
     </>
   )
 }

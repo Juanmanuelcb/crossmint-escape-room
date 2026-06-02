@@ -17,6 +17,7 @@ import { P2_Bypass } from '@/puzzles/P2_Bypass'
 import { P3_RigCables } from '@/puzzles/P3_RigCables'
 import { P4_Launch } from '@/puzzles/P4_Launch'
 import { Hud } from '@/ui/Hud'
+import { StartScreen } from '@/ui/StartScreen'
 import { WinScreen } from '@/ui/WinScreen'
 import { GameOverScreen } from '@/ui/GameOverScreen'
 import { useGameStore } from '@/state/gameStore'
@@ -104,7 +105,8 @@ export const App: React.FC = () => {
           </EffectComposer>
         </Canvas>
       </KeyboardControls>
-      <Hud />
+      {status === 'playing' && <Hud />}
+      {status === 'idle' && <StartScreen />}
       {status === 'won' && <WinScreen />}
       {status === 'lost' && <GameOverScreen />}
     </>

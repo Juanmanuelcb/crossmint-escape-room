@@ -317,6 +317,7 @@ export const P2_Bypass: React.FC = () => {
   const gated = useGameStore((s) => !s.p1Solved)
   const solved = useGameStore((s) => s.p2Solved)
   const solveP2 = useGameStore((s) => s.solveP2)
+  const penalize = useGameStore((s) => s.penalize)
 
   const [clicked, setClicked] = React.useState<NodeId[]>([])
   const [flashing, setFlashing] = React.useState<NodeId | null>(null)
@@ -361,6 +362,7 @@ export const P2_Bypass: React.FC = () => {
       return
     }
     triggerFlash(id)
+    penalize(5000)
   }
 
   return (
