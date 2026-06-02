@@ -14,11 +14,21 @@ export const Station: React.FC = () => (
     </group>
     <mesh position={[5, WALL_H / 2, -3]} rotation={[0, Math.PI / 2, 0]}>
       <planeGeometry args={[4, WALL_H]} />
-      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+      <meshStandardMaterial
+        color='#7a7a88'
+        side={THREE.DoubleSide}
+        metalness={0.6}
+        roughness={0.4}
+      />
     </mesh>
     <mesh position={[5, WALL_H / 2, 3]} rotation={[0, Math.PI / 2, 0]}>
       <planeGeometry args={[4, WALL_H]} />
-      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+      <meshStandardMaterial
+        color='#7a7a88'
+        side={THREE.DoubleSide}
+        metalness={0.6}
+        roughness={0.4}
+      />
     </mesh>
     <Bulkhead />
   </group>

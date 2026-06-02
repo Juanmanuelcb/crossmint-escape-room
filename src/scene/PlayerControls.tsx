@@ -16,6 +16,8 @@ export const keyMap: { name: Control; keys: string[] }[] = [
 const SPEED = 4
 const R = 0.3
 
+// Two rooms joined at x=5: Control Room x in [-5,5], Pod Bay x in [5,15],
+// both z in [-5,5]. The 2m doorway gap (z in [-1,1]) opens only after P2.
 const isPassable = (x: number, z: number, doorOpen: boolean) => {
   const inCR = x > -5 + R && x < 5 - R && z > -5 + R && z < 5 - R
   const inPB = x > 5 + R && x < 15 - R && z > -5 + R && z < 5 - R

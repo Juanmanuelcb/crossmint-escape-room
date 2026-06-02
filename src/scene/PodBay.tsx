@@ -8,22 +8,41 @@ export const PodBay: React.FC = () => (
   <group>
     <mesh rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry args={[W, W]} />
-      <meshStandardMaterial color='#5a5a66' />
+      <meshStandardMaterial
+        color='#5a5a66'
+        metalness={0.7}
+        roughness={0.3}
+      />
     </mesh>
     <mesh position={[0, H / 2, -W / 2]}>
       <planeGeometry args={[W, H]} />
-      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+      <meshStandardMaterial
+        color='#7a7a88'
+        side={THREE.DoubleSide}
+        metalness={0.6}
+        roughness={0.4}
+      />
     </mesh>
     <mesh position={[0, H / 2, W / 2]}>
       <planeGeometry args={[W, H]} />
-      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+      <meshStandardMaterial
+        color='#7a7a88'
+        side={THREE.DoubleSide}
+        metalness={0.6}
+        roughness={0.4}
+      />
     </mesh>
     <mesh
       position={[W / 2, H / 2, 0]}
       rotation={[0, Math.PI / 2, 0]}
     >
       <planeGeometry args={[W, H]} />
-      <meshStandardMaterial color='#7a7a88' side={THREE.DoubleSide} />
+      <meshStandardMaterial
+        color='#7a7a88'
+        side={THREE.DoubleSide}
+        metalness={0.6}
+        roughness={0.4}
+      />
     </mesh>
   </group>
 )

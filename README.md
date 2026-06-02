@@ -31,6 +31,18 @@ Each one exercises a different kind of attention.
 
 Emergency lighting pulses red. An alarm loops. As your oxygen drops, the lights pulse faster, the alarm gets louder, and the screen edges darken. If the timer hits zero you suffocate and get a restart button. With a 15-minute timer, most attentive first-time players finish on their first attempt. The pressure is for atmosphere, not punishment.
 
+## Architecture
+
+Two rooms, side by side. The Control Room sits centered at the origin, roughly 10 by 10 by 3 meters. The Pod Bay sits at the same size, centered at x=+10. They share a wall at x=5, with a 2-meter doorway gap in the middle. The bulkhead in that gap opens after P2.
+
+A single Zustand store in `src/state/gameStore.ts` is the source of truth: the oxygen timer, three puzzle booleans, three collected symbols, the active 4-digit entry on P4, and a status enum. There is no formal Puzzle interface. Each puzzle is a self-contained component that reads the store directly.
+
+All four puzzles mount as siblings under one `<Canvas>` in `App.tsx`. Linear gating is computed per puzzle with an early return: if the previous puzzle is not solved, the component returns null. P4 reads symbols one, two, and three indirectly through what the HUD already shows the player. The fourth digit is the pod serial `#9`, engraved on the pod hull.
+
+Scene composition stays flat. `Station.tsx` holds the room geometry and the bulkhead. `PlayerControls.tsx` owns the first-person camera, WASD, and AABB wall collision. `Lighting.tsx` handles the emergency lights. The puzzle files sit next to each other under `src/puzzles/`.
+
+Hints are diegetic only. Every clue is an object in the world: the printed manual at the main console, the schematic on the wall, the service tag on the junction panel, the engraving on the pod hull. There is no HUD hint button by design.
+
 ## Run locally
 
 ```bash

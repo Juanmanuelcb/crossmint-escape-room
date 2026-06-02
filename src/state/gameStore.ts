@@ -16,6 +16,7 @@ export const LAUNCH_CODE: readonly Digit[] = ['3', '3', '5', '9']
 
 export interface GameState {
   startedAt: number | null
+  /** Total air supply in ms (15 * 60 * 1000). */
   durationMs: number
   status: 'idle' | 'playing' | 'won' | 'lost'
 
@@ -29,7 +30,12 @@ export interface GameState {
     three: Digit | null
   }
 
+  /** Active 4-digit launch attempt. On wrong 4th digit we clear to []; we do not shift. */
   enteredCode: Digit[]
+
+  /** Increments on every reset. Used as a React key to force-remount puzzles
+   * so their local state (clicked nodes, installed cables, etc.) clears. */
+  runId: number
 
   start: () => void
   solveP1: () => void
@@ -54,6 +60,7 @@ const initialState = {
     three: null,
   },
   enteredCode: [] as Digit[],
+  runId: 0,
 }
 
 export const useGameStore = create<GameState>()((set, get) => ({
@@ -83,6 +90,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
     })),
 
   enterDigit: (d) => {
+    if (get().status !== 'playing') return
     const next = [...get().enteredCode, d]
     if (next.length < 4) {
       set({ enteredCode: next })
@@ -99,5 +107,5 @@ export const useGameStore = create<GameState>()((set, get) => ({
 
   win: () => set({ status: 'won' }),
   lose: () => set({ status: 'lost' }),
-  reset: () => set({ ...initialState }),
+  reset: () => set((s) => ({ ...initialState, runId: s.runId + 1 })),
 }))
