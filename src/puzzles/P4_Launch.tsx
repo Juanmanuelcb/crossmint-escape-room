@@ -3,6 +3,7 @@ import { Text } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGameStore, type Digit } from '@/state/gameStore'
+import { useRunConfig } from '@/state/runConfig'
 
 const DIGITS: Digit[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
@@ -78,6 +79,7 @@ export const P4_Launch: React.FC = () => {
   const gated = useGameStore((s) => !s.p3Solved)
   const enterDigit = useGameStore((s) => s.enterDigit)
   const entered = useGameStore((s) => s.enteredCode)
+  const cfg = useRunConfig()
 
   if (gated) return null
 
@@ -120,7 +122,7 @@ export const P4_Launch: React.FC = () => {
           anchorX='center'
           anchorY='middle'
         >
-          ESCAPE POD #9 // HELIOS-IX
+          {`ESCAPE POD #${cfg.podSerial} // HELIOS-IX`}
         </Text>
 
         <Text

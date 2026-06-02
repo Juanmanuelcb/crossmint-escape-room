@@ -3,6 +3,7 @@ import { Html, Text } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import type { MeshStandardMaterial } from 'three'
 import { useGameStore } from '@/state/gameStore'
+import { useRunConfig } from '@/state/runConfig'
 
 interface RowSpec {
   index: number
@@ -11,12 +12,9 @@ interface RowSpec {
   critical: boolean
 }
 
-const ROWS: readonly RowSpec[] = [
-  { index: 1, label: 'NAVIGATION', code: 'E-01', critical: false },
-  { index: 2, label: 'COMMS', code: 'E-02', critical: false },
-  { index: 3, label: 'REACTOR', code: 'F-7C', critical: true },
-  { index: 4, label: 'LIFE SUPPORT', code: 'E-03', critical: false },
-]
+const LABELS = ['NAVIGATION', 'COMMS', 'REACTOR', 'LIFE SUPPORT'] as const
+const E_CODES = ['E-01', 'E-02', 'E-03', 'E-04'] as const
+const CRITICAL_CODE = 'F-7C'
 
 const INFO = '#88ccff'
 const CRITICAL = '#ff3322'
@@ -119,6 +117,14 @@ export const P1_Diagnose: React.FC = () => {
   const solved = useGameStore((s) => s.p1Solved)
   const solveP1 = useGameStore((s) => s.solveP1)
   const penalize = useGameStore((s) => s.penalize)
+  const cfg = useRunConfig()
+
+  const rows: RowSpec[] = LABELS.map((label, i) => ({
+    index: i + 1,
+    label,
+    code: i === cfg.p1.criticalIndex ? CRITICAL_CODE : E_CODES[i],
+    critical: i === cfg.p1.criticalIndex,
+  }))
 
   const [flashIndex, setFlashIndex] = React.useState<number | null>(null)
   const flashTimer = React.useRef<number | null>(null)
@@ -143,7 +149,7 @@ export const P1_Diagnose: React.FC = () => {
 
   const handleRowClick = (spec: RowSpec) => {
     if (spec.critical) {
-      solveP1()
+      solveP1(cfg.p1.digit)
     } else {
       triggerFlash(spec.index)
       penalize(5000)
@@ -197,7 +203,7 @@ export const P1_Diagnose: React.FC = () => {
           DIAGNOSIS LOGGED // REACTOR OFFLINE
         </Text>
       ) : (
-        ROWS.map((spec, i) => (
+        rows.map((spec, i) => (
           <DiagnosticRow
             key={spec.index}
             spec={spec}

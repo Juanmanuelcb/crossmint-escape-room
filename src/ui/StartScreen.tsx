@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { useGameStore } from '@/state/gameStore'
+import { useRunConfig } from '@/state/runConfig'
 
 export const StartScreen: React.FC = () => {
   const start = useGameStore((s) => s.start)
+  const cfg = useRunConfig()
 
   const [faded, setFaded] = React.useState(false)
   React.useEffect(() => {
@@ -33,7 +35,7 @@ export const StartScreen: React.FC = () => {
 
       <button
         type='button'
-        onClick={start}
+        onClick={() => start(cfg.launchCode)}
         className='mt-10 rounded-md border-2 border-[#ff3322] bg-transparent px-10 py-3 text-lg font-bold tracking-[0.3em] text-[#ff3322] hover:bg-[#ff3322] hover:text-black'
       >
         START

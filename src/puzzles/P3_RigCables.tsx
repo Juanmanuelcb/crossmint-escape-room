@@ -3,17 +3,15 @@ import { Text } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import type { MeshStandardMaterial } from 'three'
 import { useGameStore } from '@/state/gameStore'
+import { useRunConfig, type BypassColor } from '@/state/runConfig'
 
-type CableColor = 'BLUE' | 'GREEN' | 'YELLOW'
+type CableColor = BypassColor
 
 const COLOR: Record<CableColor, string> = {
   BLUE: '#3366ff',
   GREEN: '#22cc66',
   YELLOW: '#ffcc33',
 }
-
-const TRAY_ORDER: readonly CableColor[] = ['YELLOW', 'BLUE', 'GREEN']
-const CORRECT: readonly CableColor[] = ['BLUE', 'GREEN', 'YELLOW']
 
 const BODY = '#222230'
 const INERT = '#404048'
@@ -136,6 +134,11 @@ export const P3_RigCables: React.FC = () => {
   const solved = useGameStore((s) => s.p3Solved)
   const solveP3 = useGameStore((s) => s.solveP3)
   const penalize = useGameStore((s) => s.penalize)
+  const cfg = useRunConfig()
+
+  const CORRECT = cfg.p3.order
+  const TRAY_ORDER = cfg.p3.trayOrder
+  const p3Digit = cfg.p3.digit
 
   const [installed, setInstalled] = React.useState<
     readonly (CableColor | null)[]
@@ -172,7 +175,7 @@ export const P3_RigCables: React.FC = () => {
       setInstalled(next)
       setSelected(null)
       if (next.every((c, i) => c === CORRECT[i])) {
-        solveP3()
+        solveP3(p3Digit)
       }
     } else {
       triggerSpark()
@@ -189,7 +192,7 @@ export const P3_RigCables: React.FC = () => {
 
   const displayColor = solved ? NOMINAL : spark ? CRITICAL : INFO
   const displayText = solved
-    ? 'POWER RESTORED // CODE DIGIT: 5'
+    ? `POWER RESTORED // CODE DIGIT: ${p3Digit}`
     : 'AWAITING POWER'
 
   const nextEmptyIdx = installed.findIndex((c) => c === null)
@@ -241,51 +244,30 @@ export const P3_RigCables: React.FC = () => {
         BYPASS ORDER
       </Text>
       <group position={[PANEL_X, PANEL_Y - 0.48, FRONT_Z + 0.02]}>
-        <Text
-          position={[-0.28, 0, 0]}
-          fontSize={0.05}
-          color={COLOR.BLUE}
-          anchorX='center'
-          anchorY='middle'
-        >
-          [BLUE]
-        </Text>
-        <Text
-          position={[-0.1, 0, 0]}
-          fontSize={0.05}
-          color={WARM}
-          anchorX='center'
-          anchorY='middle'
-        >
-          {'>'}
-        </Text>
-        <Text
-          position={[0.07, 0, 0]}
-          fontSize={0.05}
-          color={COLOR.GREEN}
-          anchorX='center'
-          anchorY='middle'
-        >
-          [GREEN]
-        </Text>
-        <Text
-          position={[0.24, 0, 0]}
-          fontSize={0.05}
-          color={WARM}
-          anchorX='center'
-          anchorY='middle'
-        >
-          {'>'}
-        </Text>
-        <Text
-          position={[0.43, 0, 0]}
-          fontSize={0.05}
-          color={COLOR.YELLOW}
-          anchorX='center'
-          anchorY='middle'
-        >
-          [YELLOW]
-        </Text>
+        {CORRECT.map((color, i) => (
+          <React.Fragment key={color}>
+            <Text
+              position={[[-0.28, 0.07, 0.43][i], 0, 0]}
+              fontSize={0.05}
+              color={COLOR[color]}
+              anchorX='center'
+              anchorY='middle'
+            >
+              {`[${color}]`}
+            </Text>
+            {i < 2 && (
+              <Text
+                position={[[-0.1, 0.24][i], 0, 0]}
+                fontSize={0.05}
+                color={WARM}
+                anchorX='center'
+                anchorY='middle'
+              >
+                {'>'}
+              </Text>
+            )}
+          </React.Fragment>
+        ))}
       </group>
 
       {PORT_OFFSETS.map((_, i) => (
@@ -330,7 +312,7 @@ export const P3_RigCables: React.FC = () => {
           outlineWidth={0.006}
           outlineColor={NOMINAL}
         >
-          5
+          {p3Digit}
         </Text>
       )}
 

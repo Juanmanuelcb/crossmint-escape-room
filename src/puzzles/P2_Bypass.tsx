@@ -3,6 +3,7 @@ import { Text } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import type { MeshStandardMaterial } from 'three'
 import { useGameStore } from '@/state/gameStore'
+import { useRunConfig } from '@/state/runConfig'
 
 type NodeId =
   | 'REACTOR'
@@ -76,11 +77,23 @@ const NODES: GridNode[] = [
   },
 ]
 
-const CABLES: Cable[] = [
+const buildCables = (
+  bypass: readonly [CableColor, CableColor, CableColor],
+): Cable[] => [
   { from: 'REACTOR', to: 'JUNCTION-A', color: 'RED', dead: true },
-  { from: 'AUX BATTERY', to: 'JUNCTION-A', color: 'BLUE', partOfBypass: true },
-  { from: 'JUNCTION-A', to: 'JUNCTION-C', color: 'GREEN', partOfBypass: true },
-  { from: 'JUNCTION-C', to: 'POD BAY', color: 'YELLOW', partOfBypass: true },
+  {
+    from: 'AUX BATTERY',
+    to: 'JUNCTION-A',
+    color: bypass[0],
+    partOfBypass: true,
+  },
+  {
+    from: 'JUNCTION-A',
+    to: 'JUNCTION-C',
+    color: bypass[1],
+    partOfBypass: true,
+  },
+  { from: 'JUNCTION-C', to: 'POD BAY', color: bypass[2], partOfBypass: true },
   { from: 'AUX BATTERY', to: 'JUNCTION-B', color: 'YELLOW' },
   { from: 'JUNCTION-B', to: 'JUNCTION-D', color: 'GREEN', severed: true },
   { from: 'JUNCTION-D', to: 'POD BAY', color: 'RED', dead: true },
@@ -327,6 +340,10 @@ export const P2_Bypass: React.FC = () => {
   const solved = useGameStore((s) => s.p2Solved)
   const solveP2 = useGameStore((s) => s.solveP2)
   const penalize = useGameStore((s) => s.penalize)
+  const cfg = useRunConfig()
+
+  const cables = React.useMemo(() => buildCables(cfg.p3.order), [cfg.p3.order])
+  const p2Digit = cfg.p2.digit
 
   const [clicked, setClicked] = React.useState<NodeId[]>([])
   const [flashing, setFlashing] = React.useState<NodeId | null>(null)
@@ -345,9 +362,9 @@ export const P2_Bypass: React.FC = () => {
     if (solved) return
     if (clicked.length !== SEQUENCE.length) return
     if (clicked.every((id, i) => id === SEQUENCE[i])) {
-      solveP2()
+      solveP2(p2Digit)
     }
-  }, [clicked, solved, solveP2])
+  }, [clicked, solved, solveP2, p2Digit])
 
   if (gated) return null
 
@@ -405,7 +422,7 @@ export const P2_Bypass: React.FC = () => {
       </Text>
 
       <group position={[0, 0.05, 0]}>
-        {CABLES.map((cable) => (
+        {cables.map((cable) => (
           <CableSegment
             key={cable.from + '->' + cable.to}
             cable={cable}
@@ -413,7 +430,7 @@ export const P2_Bypass: React.FC = () => {
           />
         ))}
 
-        {CABLES.map((cable) => (
+        {cables.map((cable) => (
           <CableColorTag
             key={'tag-' + cable.from + '->' + cable.to}
             cable={cable}
