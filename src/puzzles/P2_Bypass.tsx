@@ -10,6 +10,7 @@ type NodeId =
   | 'AUX BATTERY'
   | 'JUNCTION-B'
   | 'JUNCTION-C'
+  | 'JUNCTION-D'
   | 'POD BAY'
 
 interface GridNode {
@@ -54,27 +55,35 @@ const cableHex = (c: CableColor): string => {
 // +z is toward player. The wrapping group rotates Math.PI around Y to
 // face the +z wall, so local +x maps to world -x (player's left).
 const NODES: GridNode[] = [
-  { id: 'REACTOR', label: 'REACTOR', x: 1.3, y: 0.7, clickable: false },
-  { id: 'JUNCTION-A', label: 'JUNCTION A', x: 0.2, y: 0.7, clickable: true },
+  { id: 'REACTOR', label: 'REACTOR', x: 1.4, y: 0.5, clickable: false },
+  { id: 'JUNCTION-A', label: 'JUNCTION A', x: 0.3, y: 0.5, clickable: true },
+  { id: 'JUNCTION-C', label: 'JUNCTION C', x: -0.85, y: 0.5, clickable: true },
   {
     id: 'AUX BATTERY',
     label: 'AUX BATTERY',
-    x: 1.3,
-    y: -0.5,
+    x: 1.4,
+    y: -0.05,
     clickable: false,
   },
-  { id: 'JUNCTION-B', label: 'JUNCTION B', x: 0.0, y: -0.5, clickable: true },
-  { id: 'JUNCTION-C', label: 'JUNCTION C', x: -0.9, y: -0.5, clickable: true },
-  { id: 'POD BAY', label: 'POD BAY', x: -1.45, y: 0.15, clickable: false },
+  { id: 'POD BAY', label: 'POD BAY', x: -1.4, y: -0.05, clickable: false },
+  { id: 'JUNCTION-B', label: 'JUNCTION B', x: 0.3, y: -0.65, clickable: true },
+  {
+    id: 'JUNCTION-D',
+    label: 'JUNCTION D',
+    x: -0.85,
+    y: -0.65,
+    clickable: true,
+  },
 ]
 
 const CABLES: Cable[] = [
   { from: 'REACTOR', to: 'JUNCTION-A', color: 'RED', dead: true },
   { from: 'AUX BATTERY', to: 'JUNCTION-A', color: 'BLUE', partOfBypass: true },
-  { from: 'AUX BATTERY', to: 'JUNCTION-B', color: 'YELLOW' },
   { from: 'JUNCTION-A', to: 'JUNCTION-C', color: 'GREEN', partOfBypass: true },
-  { from: 'JUNCTION-B', to: 'JUNCTION-C', color: 'RED', severed: true },
   { from: 'JUNCTION-C', to: 'POD BAY', color: 'YELLOW', partOfBypass: true },
+  { from: 'AUX BATTERY', to: 'JUNCTION-B', color: 'YELLOW' },
+  { from: 'JUNCTION-B', to: 'JUNCTION-D', color: 'GREEN', severed: true },
+  { from: 'JUNCTION-D', to: 'POD BAY', color: 'RED', dead: true },
 ]
 
 const SEQUENCE: NodeId[] = ['JUNCTION-A', 'JUNCTION-C']
