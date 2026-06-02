@@ -4,7 +4,7 @@ Project-level conventions for Claude Code working in this repo.
 
 ## Stack
 
-Vite + React 19 + TypeScript, `@react-three/fiber` v9, `@react-three/drei` v10, Tailwind, deployed to Vercel. Package manager: **bun** (never npm/pnpm/yarn).
+Vite + React 19 + TypeScript, `@react-three/fiber` v9, `@react-three/drei` v10, Tailwind, deployed to GitHub Pages. Package manager: **bun** (never npm/pnpm/yarn).
 
 ## Code style
 
