@@ -12,4 +12,20 @@ export default defineConfig(({ command }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'react',
+              test: /node_modules\/(react|react-dom|scheduler)\//,
+            },
+            { name: 'three', test: /node_modules\/three\// },
+            { name: 'r3f', test: /node_modules\/@react-three\// },
+          ],
+        },
+      },
+    },
+  },
 }))

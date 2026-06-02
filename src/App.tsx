@@ -1,13 +1,6 @@
 import * as React from 'react'
 import { Canvas } from '@react-three/fiber'
 import { KeyboardControls, Environment, Sparkles } from '@react-three/drei'
-import {
-  EffectComposer,
-  Bloom,
-  Vignette,
-  Noise,
-  ChromaticAberration,
-} from '@react-three/postprocessing'
 import { PlayerControls } from '@/scene/PlayerControls'
 import { keyMap } from '@/scene/keyMap'
 import { Station } from '@/scene/Station'
@@ -21,6 +14,10 @@ import { StartScreen } from '@/ui/StartScreen'
 import { WinScreen } from '@/ui/WinScreen'
 import { GameOverScreen } from '@/ui/GameOverScreen'
 import { useGameStore } from '@/state/gameStore'
+
+const PostFx = React.lazy(() =>
+  import('@/scene/PostFx').then((m) => ({ default: m.PostFx })),
+)
 
 const computeOxygen = (
   status: string,
@@ -92,17 +89,9 @@ export const App: React.FC = () => {
             opacity={0.3}
           />
           <PlayerControls />
-          <EffectComposer>
-            <Bloom
-              intensity={0.7}
-              luminanceThreshold={0.7}
-              luminanceSmoothing={0.2}
-              mipmapBlur
-            />
-            <Vignette darkness={vignetteDarkness} offset={0.3} />
-            <Noise opacity={0.04} />
-            <ChromaticAberration offset={[0.0004, 0.0004]} />
-          </EffectComposer>
+          <React.Suspense fallback={null}>
+            <PostFx darkness={vignetteDarkness} />
+          </React.Suspense>
         </Canvas>
       </KeyboardControls>
       {status === 'playing' && <Hud />}
