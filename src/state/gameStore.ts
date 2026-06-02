@@ -1,22 +1,12 @@
 import { create } from 'zustand'
 
-export type Digit =
-  | '0'
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | '6'
-  | '7'
-  | '8'
-  | '9'
+export type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 
 export const LAUNCH_CODE: readonly Digit[] = ['3', '3', '5', '9']
 
 export interface GameState {
   startedAt: number | null
-  /** Total air supply in ms (15 * 60 * 1000). */
+  /** Total air supply in ms (2 * 60 * 1000). */
   durationMs: number
   status: 'idle' | 'playing' | 'won' | 'lost'
 
@@ -49,7 +39,7 @@ export interface GameState {
 
 const initialState = {
   startedAt: null,
-  durationMs: 15 * 60 * 1000,
+  durationMs: 2 * 60 * 1000,
   status: 'idle' as const,
   p1Solved: false,
   p2Solved: false,

@@ -1,0 +1,17 @@
+dist/
+node_modules/
+bun.lock
+.notes/
+public/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.mp4
+*.mp3
+*.wav
+*.glb
+*.gltf
+*.hdr

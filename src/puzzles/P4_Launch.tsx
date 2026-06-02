@@ -4,18 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGameStore, type Digit } from '@/state/gameStore'
 
-const DIGITS: Digit[] = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '0',
-]
+const DIGITS: Digit[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
 const HULL_RADIUS = 1
 const HULL_LENGTH = 3
@@ -94,13 +83,8 @@ export const P4_Launch: React.FC = () => {
 
   return (
     <group>
-      <mesh
-        position={[13, 1.0, 0]}
-        rotation={[0, 0, Math.PI / 2]}
-      >
-        <cylinderGeometry
-          args={[HULL_RADIUS, HULL_RADIUS, HULL_LENGTH, 24]}
-        />
+      <mesh position={[13, 1.0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[HULL_RADIUS, HULL_RADIUS, HULL_LENGTH, 24]} />
         <meshStandardMaterial color='#404048' />
       </mesh>
 
@@ -112,18 +96,12 @@ export const P4_Launch: React.FC = () => {
         <meshStandardMaterial color='#404048' />
       </mesh>
 
-      <mesh
-        position={[HATCH_X + 0.01, 1.0, 0]}
-        rotation={[0, -Math.PI / 2, 0]}
-      >
+      <mesh position={[HATCH_X + 0.01, 1.0, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <circleGeometry args={[HULL_RADIUS * 0.92, 32]} />
         <meshStandardMaterial color='#222230' />
       </mesh>
 
-      <mesh
-        position={[HATCH_X + 0.02, 1.0, 0]}
-        rotation={[0, -Math.PI / 2, 0]}
-      >
+      <mesh position={[HATCH_X + 0.02, 1.0, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <ringGeometry args={[HULL_RADIUS * 0.9, HULL_RADIUS * 0.98, 48]} />
         <meshStandardMaterial
           color='#ffaa55'
@@ -132,10 +110,7 @@ export const P4_Launch: React.FC = () => {
         />
       </mesh>
 
-      <group
-        position={[KEYPAD_X, 1.5, 0]}
-        rotation={[0, -Math.PI / 2, 0]}
-      >
+      <group position={[KEYPAD_X, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <KeypadBackplate pulsing={entered.length === 0} />
 
         <Text
@@ -173,13 +148,7 @@ export const P4_Launch: React.FC = () => {
             const col = i < 9 ? (i % 3) - 1 : 0
             const row = i < 9 ? 1 - Math.floor(i / 3) : -2
             return (
-              <Key
-                key={d}
-                digit={d}
-                col={col}
-                row={row}
-                onPress={enterDigit}
-              />
+              <Key key={d} digit={d} col={col} row={row} onPress={enterDigit} />
             )
           })}
         </group>

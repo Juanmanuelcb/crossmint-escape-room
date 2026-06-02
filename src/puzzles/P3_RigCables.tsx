@@ -167,9 +167,7 @@ export const P3_RigCables: React.FC = () => {
     if (selected === null) return
     if (installed[portIndex] !== null) return
     if (CORRECT[portIndex] === selected) {
-      const next = installed.map((c, i) =>
-        i === portIndex ? selected : c,
-      )
+      const next = installed.map((c, i) => (i === portIndex ? selected : c))
       setInstalled(next)
       setSelected(null)
       if (next.every((c, i) => c === CORRECT[i])) {

@@ -3,15 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { PointerLockControls, useKeyboardControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useGameStore } from '@/state/gameStore'
-
-type Control = 'forward' | 'back' | 'left' | 'right'
-
-export const keyMap: { name: Control; keys: string[] }[] = [
-  { name: 'forward', keys: ['KeyW', 'ArrowUp'] },
-  { name: 'back', keys: ['KeyS', 'ArrowDown'] },
-  { name: 'left', keys: ['KeyA', 'ArrowLeft'] },
-  { name: 'right', keys: ['KeyD', 'ArrowRight'] },
-]
+import type { Control } from '@/scene/keyMap'
 
 const SPEED = 4
 const R = 0.3
@@ -21,8 +13,7 @@ const R = 0.3
 const isPassable = (x: number, z: number, doorOpen: boolean) => {
   const inCR = x > -5 + R && x < 5 - R && z > -5 + R && z < 5 - R
   const inPB = x > 5 + R && x < 15 - R && z > -5 + R && z < 5 - R
-  const inDoor =
-    doorOpen && x >= 5 - R && x <= 5 + R && z > -1 + R && z < 1 - R
+  const inDoor = doorOpen && x >= 5 - R && x <= 5 + R && z > -1 + R && z < 1 - R
   return inCR || inPB || inDoor
 }
 

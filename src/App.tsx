@@ -8,7 +8,8 @@ import {
   Noise,
   ChromaticAberration,
 } from '@react-three/postprocessing'
-import { PlayerControls, keyMap } from '@/scene/PlayerControls'
+import { PlayerControls } from '@/scene/PlayerControls'
+import { keyMap } from '@/scene/keyMap'
 import { Station } from '@/scene/Station'
 import { Lighting } from '@/scene/Lighting'
 import { P1_Diagnose } from '@/puzzles/P1_Diagnose'

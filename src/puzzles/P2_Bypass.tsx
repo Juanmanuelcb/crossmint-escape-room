@@ -56,7 +56,13 @@ const cableHex = (c: CableColor): string => {
 const NODES: GridNode[] = [
   { id: 'REACTOR', label: 'REACTOR', x: 1.3, y: 0.7, clickable: false },
   { id: 'JUNCTION-A', label: 'JUNCTION A', x: 0.2, y: 0.7, clickable: true },
-  { id: 'AUX BATTERY', label: 'AUX BATTERY', x: 1.3, y: -0.5, clickable: false },
+  {
+    id: 'AUX BATTERY',
+    label: 'AUX BATTERY',
+    x: 1.3,
+    y: -0.5,
+    clickable: false,
+  },
   { id: 'JUNCTION-B', label: 'JUNCTION B', x: 0.0, y: -0.5, clickable: true },
   { id: 'JUNCTION-C', label: 'JUNCTION C', x: -0.9, y: -0.5, clickable: true },
   { id: 'POD BAY', label: 'POD BAY', x: -1.45, y: 0.15, clickable: false },
@@ -285,9 +291,7 @@ const CableColorTag: React.FC<CableColorTagProps> = ({ cable }) => {
       position={[cx, cy + 0.1, TEXT_Z]}
       fontSize={0.07}
       color={
-        cable.dead || cable.severed
-          ? COLOR_WALL_ACCENT
-          : cableHex(cable.color)
+        cable.dead || cable.severed ? COLOR_WALL_ACCENT : cableHex(cable.color)
       }
       anchorX='center'
       anchorY='middle'

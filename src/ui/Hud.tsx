@@ -41,10 +41,7 @@ export const Hud: React.FC = () => {
 
       <div className='absolute top-4 right-4 flex gap-2 font-mono text-xl text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]'>
         {slots.map((value, i) => (
-          <div
-            key={i}
-            className='flex flex-col items-center gap-1'
-          >
+          <div key={i} className='flex flex-col items-center gap-1'>
             <span className='text-[10px] tracking-widest text-white/60'>
               {i + 1}
             </span>

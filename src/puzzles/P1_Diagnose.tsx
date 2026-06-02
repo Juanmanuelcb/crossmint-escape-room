@@ -55,11 +55,7 @@ const DiagnosticRow: React.FC<RowProps> = ({
 
   const baseColor = spec.critical ? CRITICAL : INFO
   const displayColor = flashing ? CRITICAL : baseColor
-  const propIntensity = flashing
-    ? 0.9
-    : hover
-      ? 0.8 * 0.15
-      : 0.25 * 0.15
+  const propIntensity = flashing ? 0.9 : hover ? 0.8 * 0.15 : 0.25 * 0.15
 
   useFrame(({ clock }) => {
     if (!pulsing || flashing) return
@@ -252,12 +248,11 @@ export const P1_Diagnose: React.FC = () => {
             OPERATIONS MANUAL // STATUS CODES
           </div>
           <div className='text-[11px] mb-2'>
-            <span className='font-bold'>E-codes:</span> warning, system
-            OK.
+            <span className='font-bold'>E-codes:</span> warning, system OK.
           </div>
           <div className='text-[11px] mb-3'>
-            <span className='font-bold'>F-codes:</span> critical fault,
-            system OFFLINE.
+            <span className='font-bold'>F-codes:</span> critical fault, system
+            OFFLINE.
           </div>
           <div className='text-[10px] italic border-t border-[#2a1a0a]/40 pt-2'>
             Click the row showing an F-code.

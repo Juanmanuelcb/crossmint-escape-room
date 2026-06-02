@@ -12,7 +12,7 @@ export const WinScreen: React.FC = () => {
   const startedAt = useGameStore((s) => s.startedAt)
   const reset = useGameStore((s) => s.reset)
 
-  const frozenElapsed = React.useRef(
+  const [frozenElapsed] = React.useState(() =>
     startedAt === null ? 0 : Date.now() - startedAt,
   )
 
@@ -28,11 +28,9 @@ export const WinScreen: React.FC = () => {
         faded ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h1 className='text-7xl font-bold tracking-widest text-black'>
-        ESCAPED
-      </h1>
+      <h1 className='text-7xl font-bold tracking-widest text-black'>ESCAPED</h1>
       <p className='mt-6 font-mono text-2xl text-black tabular-nums'>
-        Run time: {formatMmSs(frozenElapsed.current)}
+        Run time: {formatMmSs(frozenElapsed)}
       </p>
       <button
         type='button'
